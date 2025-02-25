@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kredi Hesaplayıcı</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="bg-primary text-white text-center py-3">
+    <h1>Kredi Hesaplayıcı</h1>
+  </header>
+  <main class="container my-4">
+    <form id="loan-form" class="mb-4">
+      <div class="form-group">
+        <label for="loan-amount">Kredi Tutarı (₺):</label>
+        <input type="number" id="loan-amount" class="form-control" value="500000" required>
+      </div>
+      <div class="form-group">
+        <label for="loan-term">Vade (Ay):</label>
+        <input type="number" id="loan-term" class="form-control" value="120" required>
+      </div>
+      <div class="form-group">
+        <label>Faiz Oranı:</label>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="interest-period" id="monthly-interest" value="monthly" checked>
+          <label class="form-check-label" for="monthly-interest">Aylık</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="interest-period" id="annual-interest" value="annual">
+          <label class="form-check-label" for="annual-interest">Yıllık</label>
+        </div>
+        <input type="range" id="interest-rate" class="form-control-range" min="0.1" max="5" step="0.01" value="1.49" oninput="updateInterestRateDisplay(this.value)">
+        <div class="text-center mt-2">
+          <span id="interest-rate-display">1.49</span>%
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Hesapla</button>
+    </form>
+
+    <section id="results" class="mb-4">
+      <h2>Kredi Özeti</h2>
+      <p>Aylık Taksit: <span id="monthly-payment">₺0.00</span></p>
+      <p>Toplam Geri Ödeme: <span id="total-repayment">₺0.00</span></p>
+      <p>Toplam Faiz: <span id="total-interest">₺0.00</span></p>
+    </section>
+
+    <section id="chart-section" class="mb-4">
+      <canvas id="payment-chart"></canvas>
+    </section>
+
+    <section id="amortization-schedule">
+      <h2>Amortisman Tablosu</h2>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Ay</th>
+              <th>Aylık Taksit</th>
+              <th>Anapara Ödemesi</th>
+              <th>Faiz Ödemesi</th>
+              <th>Kalan Anapara</th>
+            </tr>
+          </thead>
+          <tbody id="amortization-table-body">
+            <!-- Rows will be added here by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(registration => {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          }, error => {
+            console.log('ServiceWorker registration failed: ', error);
+          });
+      });
+    }
+
+    function updateInterestRateDisplay(value) {
+      document.getElementById('interest-rate-display').innerText = value;
+    }
+  </script>
+</body>
+</html>
